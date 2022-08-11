@@ -1,0 +1,23 @@
+.home{
+    width: 40vw;
+    margin: auto;
+    margin-top: 80px;
+}
+
+.dest{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.optionsCss{
+    width: 18vw;
+    height: 25px;
+    border-radius: 5px;
+}
+
+.optCss{
+    font-size: 16px;
+    padding: 5px;
+}
