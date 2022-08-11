@@ -11,8 +11,8 @@ export const Navbar = () => {
             <Box sx={{fontFamily:"cursive", fontSize:'30px'}}>BookNow.com</Box>
             <Box sx={{display:'flex', width:"250px", justifyContent:"space-around", fontSize:'18px'}}>
                 <Link to='/' className="link">Home</Link>
-                <Box>Login</Box>
-                <Box>SignUp</Box>
+                <Link to='/login' className="link">Login</Link>
+                <Link to='/signup' className="link">SignUp</Link>
             </Box>
         </Box>
         </>

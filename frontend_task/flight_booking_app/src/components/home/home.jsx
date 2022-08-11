@@ -1,8 +1,12 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Modal } from "@mui/material";
 import React from "react";
 import "../home/home.css";
+import { useNavigate } from "react-router";
+
 
 export const Home = () => {
+
+    const navigate = useNavigate()
     
     const [arrCities, setArrCities] = React.useState([])
 
@@ -15,16 +19,34 @@ export const Home = () => {
     const [priceBool, setPriceBool] = React.useState(Boolean)
     const [price, setPrice] = React.useState(Number)
 
+    const [couApplied, setCouApplied] = React.useState(false)
+    const [couButton , setCouBut] = React.useState("")
+    const [couMsg, setCouMsg] = React.useState("")
+
+    const [loggedIn , setLoggedIn] = React.useState(false)
+
+
+    React.useEffect(() => {
+        switch (couApplied) {
+            case false:
+                setCouBut("Apply Coupon")
+                break;  
+            default:
+                break;
+        }
+    },[couApplied])
+
     React.useEffect(() => {
         
         let max_price = 20000
-
+        
         let datePer = depDate.split("-").join("").slice(5,7)
-
+        
         setPriceBool(true)
         setPrice(Math.round(max_price*datePer/100))
         
     },[depDate])
+    
     
     React.useEffect(() => {
     switch (depCity) {
@@ -111,6 +133,51 @@ export const Home = () => {
     }
     },[depCity, arrCity, depDate])
 
+    React.useEffect(() => {
+        var token = localStorage.getItem("Id")
+        if(token){
+            setLoggedIn(true)
+        }
+    },[loggedIn])
+
+    const handleRemovecoupon = () => {
+        let max_price = 20000
+        let datePer = depDate.split("-").join("").slice(5,7)
+        setCouApplied(false)
+        setCouMsg("")
+        setPrice(Math.round(max_price*datePer/100))
+    }
+
+    function sendMail() {
+
+        // var link = "mailto:paragtharnai24@gmail.com"
+        //          + "&subject=" + encodeURIComponent("Flight Tickets")
+        //          + "&body=" + encodeURIComponent("Tickets Info")
+        
+        alert("Booking Confirmed")
+    }
+
+    const NotLogged = () => {
+        navigate("/login")
+    }
+    
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+      };
+      
+        const [open, setOpen] = React.useState(false);
+        const handleOpen = () => setOpen(true);
+        const handleClose = () => setOpen(false);
+
 
     return (
         <>
@@ -153,14 +220,48 @@ export const Home = () => {
 
             {priceBool?
             <Box sx={{marginTop:"60px", alignItems:"center"}} className="dest">
-                <Box sx={{fontSize:"16px"}}> <b>Flight Fare is {price} </b></Box>
+                <Box sx={{display:"flex",alignItems:'center', fontSize:"16px"}}>Flight Fare: <p style={{fontSize:"21px", marginLeft:"5px",fontFamily:"monospace", color:"rgb(45, 45, 45)"}}> {price}/- </p> </Box>
 
                 <Box sx={{display:"flex"}}>
-                <Button variant="outlined" size="small" color="inherit" sx={{marginRight:"10px"}}> Apply Promo </Button>
-                <Button variant="contained" color="inherit" >Book Tickets</Button>
+
+                <Button variant="outlined" size="small" color="inherit" sx={{marginRight:"10px"}} onClick={couApplied? handleRemovecoupon :handleOpen}>{couButton}</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+
+            <h3>Coupons Available</h3>
+
+          <Box className="dest" sx={{marginBottom:"10px"}}>
+            <p>Flat 10% off</p>
+            <Button variant="outlined" size="small"  color="inherit" onClick={() => [setPrice(price*9/10), setOpen(false),setCouApplied(true), setCouMsg("Flat 10% off"), setCouBut("Remove Coupon") ]}>Apply Coupon</Button>
+          </Box>
+
+
+          <Box className="dest" sx={{marginBottom:"10px"}}>
+            <p>Flat 20% off</p>
+            <Button variant="outlined" size="small" color="inherit" onClick={() => [setPrice(price*4/5), setOpen(false),setCouApplied(true), setCouMsg("Flat 20% off"), setCouBut("Remove Coupon") ]}>Apply Coupon</Button>
+          </Box>
+
+          <Box className="dest" sx={{marginBottom:"10px"}}>
+            <p>Free Meal for 1 time</p>
+            <Button variant="outlined" size="small" color="inherit" onClick={() => [ setOpen(false),setCouApplied(true), setCouMsg("Free meal"), setCouBut("Remove Coupon") ]}>Apply Coupon</Button>
+          </Box>
+
+        </Box>
+      </Modal>
+                <Button variant="contained" color="inherit" onClick={loggedIn?sendMail:NotLogged}>Book Ticket</Button>
                 </Box>
             </Box>
             :null}
+
+            {couApplied?
+            <Box sx={{width:"40vw", backgroundColor:"rgb(0,0,0,0.2)", height:'24px', borderRadius:"5px"}}>{couMsg}</Box>:
+            null
+            }
 
             </Box>
 
