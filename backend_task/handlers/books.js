@@ -106,7 +106,7 @@ async function userParBookList(req, res){
         let books_arr = existingUser.books;
         books_arr.push(bookId);
 
-        await User.findOneAndUpdate({ id: decoded.id }, { bookExists });
+        await User.findOneAndUpdate({ id: decoded.id }, { books:books_arr });
         return res.status(200).send("Book successfully added to book list" );
       }
     }

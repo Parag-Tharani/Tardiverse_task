@@ -10,12 +10,18 @@ async function registerUser(req, res){
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
+    const existingName = await User.findOne({ name })
 
     if (existingUser) {
       return res.status(400).send("User Already Exists");
-    } else {
-      await User.create({ name, email, password });
-      return res.status(201).send("User Created Succesfully");
+    }
+     else {
+        if(existingName){
+            return res.status(400).send("Name Already Taken")
+        }else{
+            await User.create({ name, email, password });
+            return res.status(201).send("User Created Succesfully");
+        }
     }
   } catch (error) {
     return res.status(500).send(error);
